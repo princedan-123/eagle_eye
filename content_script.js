@@ -1,7 +1,6 @@
 /* This script uses predefined keywords to flag content in the meta element */
 
-console.log('I am executing')
-let flag = true;
+let flag = false;
 let titleContent = null;
 const metaDescriptionContent = [];
 const metaRating = [];
@@ -13,14 +12,11 @@ const restrictedKeywords= [
     'porno', 'sex'
 ]
 /* getting meta nodes name-content values */
-
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('event already fired!!!')
+function analyzeMetaTags() {
     let metaElements = document.querySelectorAll('meta');
     metaElements = Array.from(metaElements);
     for(const metaNode of metaElements) {
         if (metaNode.hasAttribute('name')) {
-            console.log(`metaNode: ${metaNode}`);
             const name = metaNode.getAttribute('name');
             const nameContent = name.toLowerCase();
             if (nameContent === 'description' && metaNode.hasAttribute('content')) {
@@ -39,7 +35,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     const titleNode = document.querySelector('head title');
     titleContent = titleNode.textContent;
-    console.log(`debugging titleContent ${titleContent}`);
 
     /* setting the flag variable */
 
@@ -95,11 +90,10 @@ document.addEventListener('DOMContentLoaded', function() {
         warningMessage.textContent = 'This website may contain pornographic content(s)';
         bodyElement.appendChild(warningMessage);
     }
-    console.log('flag status', flag);
-    console.log(`metaDescriptionContent: ${metaDescriptionContent}`);
-    console.log(`metaKeywords: ${metaKeywords}`);
-    console.log(`metaRating: ${metaRating}`);
-    console.log(`titleContent: ${titleContent}`);
-    console.log('I am still in execution!!!')
-})
-console.log('I have finished executing!!')
+}
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', analyzeMetaTags())
+}
+else{
+    analyzeMetaTags();
+}
