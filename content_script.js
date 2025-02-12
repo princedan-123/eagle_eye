@@ -1,5 +1,55 @@
 /* This script uses predefined keywords to flag content in the meta element */
 
+function renderWarningPopup() {
+    /* deletes the sites content and renders warning pop up */
+    const bodyElement = document.querySelector('body');
+    bodyElement.innerHTML = '';
+    const popUpContainer = document.createElement('div');
+    popUpContainer.classList.add('eagle-ext-container')
+    popUpContainer.innerHTML = `
+        <div class='eagle-ext-message'>
+            This website may contain pornographic content
+        </div>
+        <div class='eagle-ext-sub-container'>
+            <div class='eagle-ext-block'>
+                <button>Block</button>
+            </div>
+            <div class='eagle-ext-preview'>
+                <button>Preview</button>
+            </div>
+        </div>
+    `
+    const popUpStyle = document.createElement('style');
+    popUpStyle.textContent = `
+        body{
+        background-color:  #103456;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        }
+        .eagle-ext-container{
+        border: 2px solid white;
+        border-radius: 5px;
+        width: 50vw;
+        height: 50vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center
+        }
+        .eagle-ext-sub-container{
+        width: 100%;
+        display:flex;
+        justify-content: space-around;
+        }
+        `
+    bodyElement.appendChild(popUpContainer);
+    const head = document.querySelector('head');
+    head.appendChild(popUpStyle);      
+}
 let flag = false;
 let titleContent = null;
 const metaDescriptionContent = [];
@@ -71,24 +121,7 @@ function analyzeMetaTags() {
     /* A fallback action to modify the body of the website if it is flagged */
     
     if(flag) {
-        const bodyElement = document.querySelector('body');
-        bodyElement.innerHTML = '';
-        const warningMessage = document.createElement('section');
-        warningMessage.style.cssText = `
-            background-color: #103456;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: fixed;
-            top: 0px;
-            left: 0px;
-            z-index: 999;
-            width:100vw;
-            height:100vh;
-            `
-        warningMessage.textContent = 'This website may contain pornographic content(s)';
-        bodyElement.appendChild(warningMessage);
+        renderWarningPopup();
     }
 }
 if (document.readyState === 'loading') {
