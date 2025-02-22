@@ -1,25 +1,68 @@
 /* This script uses predefined keywords to flag content in the meta element */
 
+let originalContent = null;
+function previewAction() {
+    /* Previews the page for 10 seconds and trims the content */
+    document.body.innerHTML = originalContent;
+    const originalStyle = document.getElementById('eagle_ext_style_id');
+    originalStyle.textContent = '';
+    setTimeout(() => {
+        const blockMessage = document.createElement('div');
+        blockMessage.classList.add('eagle-ext-container')
+        blockMessage.innerHTML = 
+        `
+        <div class="message">
+            ⚠️ Warning: This website may contain pornographic content and has been blocked. ⚠️
+        </div>
+        `
+        styleTextContent = 
+        `
+        body{
+            background-color:  #103456;
+            color: white;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .eagle-ext-container{
+            border: 2px solid white;
+            border-radius: 5px;
+            width: 50vw;
+            height: 50vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center
+        }
+        `
+        document.body.innerHTML = ''; 
+        document.body.appendChild(blockMessage);
+        originalStyle.textContent = styleTextContent; 
+    }, 5000)
+}
+
 function renderWarningPopup() {
     /* deletes the sites content and renders warning pop up */
     const bodyElement = document.querySelector('body');
+    originalContent = bodyElement.innerHTML;
     bodyElement.innerHTML = '';
     const popUpContainer = document.createElement('div');
     popUpContainer.classList.add('eagle-ext-container')
     popUpContainer.innerHTML = `
         <div class='eagle-ext-message'>
-            This website may contain pornographic content
+            ⚠️ Warning: This website may contain pornographic content and has been restricted. ⚠️
         </div>
         <div class='eagle-ext-sub-container'>
-            <div class='eagle-ext-block'>
-                <button>Block</button>
-            </div>
             <div class='eagle-ext-preview'>
                 <button>Preview</button>
             </div>
         </div>
     `
     const popUpStyle = document.createElement('style');
+    popUpStyle.id = 'eagle_ext_style_id'
     popUpStyle.textContent = `
         body{
         background-color:  #103456;
@@ -48,7 +91,11 @@ function renderWarningPopup() {
         `
     bodyElement.appendChild(popUpContainer);
     const head = document.querySelector('head');
-    head.appendChild(popUpStyle);      
+    head.appendChild(popUpStyle);
+    /* Adding event listners to block and preview buttons */
+    const previewButton = document.querySelector('.eagle-ext-preview');
+    previewButton.addEventListener('click', previewAction)
+
 }
 let flag = false;
 let titleContent = null;
@@ -122,6 +169,9 @@ function analyzeMetaTags() {
     
     if(flag) {
         renderWarningPopup();
+        chrome.runtime.sendMessage({'message': 'hello'}, (response) => {
+            console.log('response', response);
+        })
     }
 }
 if (document.readyState === 'loading') {
