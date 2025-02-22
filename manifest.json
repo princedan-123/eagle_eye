@@ -9,7 +9,7 @@
       "48": "./images/eagle_eye_icon_48x48.png",
       "128": "./images/eagle_eye_icon_128x128.png"
     },
-    "permissions": ["tabs", "storage", "activeTabs"],
+    "permissions": ["tabs", "storage", "activeTab", "webNavigation"],
     "host_permissions": ["<all_urls>"],
     "action": {
 
